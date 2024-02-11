@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basic Chat Application</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="chat-container">
+      <div id="chat-area">
+        <!-- Sample message history -->
+        <div class="message assistant">
+          Hello! How can I assist you today? I'm here to help with any questions
+          you might have. Feel free to ask anything.
+        </div>
+        <div class="message user">
+          I'd like to know more about your services.
+        </div>
+        <div class="message assistant">
+          Of course! We offer a variety of AI-driven solutions. Can you specify
+          which service you are interested in? Most things we do are on multiple
+          lines that reach all the way across the screen. Did I get enough
+          information here?
+        </div>
+        <div class="message user">
+          I'm interested in the chatbot development service.
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <form id="chat-form">
+        <input type="text" id="message-input" placeholder="Type a message..." />
+        <button type="submit">Send</button>
+      </form>
+    </div>
+    <div class="settings-container">
+      <label for="model-select">Model Name:</label>
+      <select id="model-select">
+        <option value="llama">Llama</option>
+        <option value="mixtral">Mixtral</option>
+      </select>
+      <button onclick="resetChat()">Reset</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

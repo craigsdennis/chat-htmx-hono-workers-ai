@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/style.css" rel="stylesheet" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.10/htmx.min.js"
+      integrity="sha512-9qpauSP4+dDIldsrdNEZ2Z7JoyLZGfJsAP2wfXnc3drOh+5NXOBxjlq3sGXKdulmN9W+iwLxRt42zKMa8AHEeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.10/ext/sse.min.js"
+      integrity="sha512-6cSiFbbAZQdVrxJIvvQpuZP4xNWPHGOPAeA5tJ2h+daUyy0rYTXiaU70SNnTi1ZCJy6vE4RfvpT2/U5ivsyK2Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <title>Hono + HTMX Chat</title>
+  </head>
+  <body>
+    <div class="chat-container">
+      <div id="chat-area">
+        <!-- Sample message history -->
+        <!--<div class="message assistant">
+          Hello! How can I assist you today?
+        </div>
+        <div class="message user">
+          I'd like to know more about your services.
+        </div>
+        <div class="message assistant">
+          Of course! We offer a variety of AI-driven solutions. Can you specify
+          which service you are interested in?
+        </div>
+        <div class="message user">
+          I'm interested in the chatbot development service.
+        </div>-->
+      </div>
+      <div class="input-area">
+        <form
+          hx-post="/add-message"
+          hx-target="#chat-area"
+          hx-swap="beforeend"
+          hx-on::after-request="this.reset()"
+        >
+          <input
+            type="text"
+            id="message-input"
+            name="message"
+            placeholder="Type a message..."
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="settings-container">
+      <label for="model-select">Model Name:</label>
+      <select id="model-select">
+        <option value="llama">Llama</option>
+        <option value="mixtral">Mixtral</option>
+      </select>
+      <button onclick="resetChat()">Reset</button>
+    </div>
+    <script>
+      function extractResponseNodes(nodes) {
+        for (const node of nodes) {
+          if (node.data.startsWith('{"response"')) {
+            const value = JSON.parse(node.data).response;
+            if (value) {
+              node.data = value;
+            } else {
+              node.data = "";
+            }
+          }
+        }
+      }
+      document.body.addEventListener("htmx:beforeSettle", function (evt) {
+        const elt = evt.detail.elt;
+        if (elt.id === "message-streamer") {
+          // These are text nodes
+          const childNodes = [...elt.childNodes];
+          extractResponseNodes(childNodes);
+          const lastTextNode = childNodes.at(-1);
+          if (lastTextNode.data === "[DONE]") {
+            console.log({ childNodes });
+            lastTextNode.data = "";
+            console.log("streamComplete", elt);
+            const message = elt.textContent;
+            console.log({ message });
+            const parent = elt.parentNode;
+            console.log({ parent });
+            const valsAsString = parent.getAttribute("hx-vals");
+            let vals;
+            try {
+              vals = JSON.parse(valsAsString);
+            } catch (err) {
+              vals = {};
+            }
+            // Overwrites the message property that we send up
+            vals.message = message;
+            parent.setAttribute("hx-vals", JSON.stringify(vals));
+            htmx.process(parent);
+            htmx.trigger(parent, "streamComplete", {});
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
