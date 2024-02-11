@@ -1,6 +1,8 @@
 import { Ai } from "@cloudflare/ai";
 import { Hono } from "hono";
+import { html, raw } from "hono/html";
 import { serveStatic } from "hono/cloudflare-workers";
+import markdownit from "markdown-it";
 import manifest from "__STATIC_CONTENT_MANIFEST";
 
 type Bindings = {
@@ -32,7 +34,11 @@ app.get("/stream-prompt", async (c) => {
 app.post("/assistant-message-complete", async (c) => {
   // Update storage
   const vals = await c.req.formData();
-  return c.html(<div class="message assistant">{vals.get("message")}</div>);
+
+  const md = markdownit();
+  let message: string = vals.get("message") || "";
+  const rendered = md.render(message);
+  return c.html(<div class="message assistant rendered">{html`${raw(rendered)}`}</div>);
 });
 
 app.post("/add-message", async (c) => {
@@ -42,18 +48,20 @@ app.post("/add-message", async (c) => {
   return c.html(
     <>
       <div class="message user">{message}</div>
-      <div class="message assistant"
-        hx-post="/assistant-message-complete" 
+      <div
+        class="message assistant"
+        hx-post="/assistant-message-complete"
         hx-swap="outerHTML"
         hx-trigger="streamComplete"
-        hx-vals='{"message": ""}'>
-          <div
-            id="message-streamer"
-            hx-ext="sse"
-            sse-connect={"/stream-prompt?message=" + encodeURIComponent(message)}
-            sse-swap="message"
-            hx-swap="beforeend"
-          ></div>
+        hx-vals='{"message": ""}'
+      >
+        <div
+          id="message-streamer"
+          hx-ext="sse"
+          sse-connect={"/stream-prompt?message=" + encodeURIComponent(message)}
+          sse-swap="message"
+          hx-swap="beforeend"
+        ></div>
       </div>
     </>
   );

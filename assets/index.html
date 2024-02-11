@@ -16,6 +16,14 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+      integrity="sha512-rO+olRTkcf304DQBxSWxln8JXCzTHlKnIdnMUwYvQa9/Jd4cQaNkItIUj6Z4nvW1dqK0SKXLbn9h4KwZTNtAyw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <title>Hono + HTMX Chat</title>
   </head>
   <body>
@@ -62,6 +70,19 @@
       </select>
       <button onclick="resetChat()">Reset</button>
     </div>
+    <script>
+      htmx.onLoad(function (content) {
+        if (
+          content?.className?.includes("assistant") &&
+          content?.className?.includes("rendered")
+        ) {
+          const codeEls = [...content.querySelectorAll("code")];
+          for (const codeEl of codeEls) {
+            hljs.highlightElement(codeEl);
+          }
+        }
+      });
+    </script>
     <script>
       function extractResponseNodes(nodes) {
         for (const node of nodes) {

@@ -5,10 +5,13 @@
   },
   "dependencies": {
     "@cloudflare/ai": "^1.0.50",
-    "hono": "^4.0.0"
+    "highlight.js": "^11.9.0",
+    "hono": "^4.0.0",
+    "markdown-it": "^14.0.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240208.0",
+    "@types/markdown-it": "^13.0.7",
     "wrangler": "^3.25.0"
   }
 }
