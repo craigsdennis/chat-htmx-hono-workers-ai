@@ -45,6 +45,34 @@ body {
     background-color: #D6E9FF; /* Slightly darker shade of blue for contrast */
     box-sizing: border-box; /* Includes padding in the width calculation */
   }
+  .settings-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .settings-container select, .settings-container textarea {
+    margin-bottom: 20px; /* Spacing between form elements */
+  }
+  
+  .checkbox-container {
+    margin-bottom: 20px; /* Spacing for checkbox */
+  }
+  
+  .reset-button {
+    background-color: #E5F2FF; /* Matching the chat container background */
+    color: #333; /* Font color */
+    border: none; /* Removes the default border */
+    padding: 10px 20px; /* Padding for the button */
+    text-align: center; /* Centers the text/icon */
+    cursor: pointer; /* Changes the cursor to indicate it's clickable */
+    display: inline-flex; /* For aligning the icon with the text */
+    align-items: center; /* Aligns the icon vertically */
+    border-radius: 5px; /* Optional: rounds the corners of the button */
+  }
+  
+  .reset-button .fa-redo {
+    margin-right: 5px; /* Spacing between the icon and text */
+  }
   
   .message {
     max-width: 70%;
